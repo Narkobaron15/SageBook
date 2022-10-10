@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ADO.NET_Homework_3
+namespace ADO.NET_Homework_3.Model
 {
     public class Book
     {

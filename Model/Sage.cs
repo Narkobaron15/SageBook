@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ADO.NET_Homework_3
+namespace ADO.NET_Homework_3.Model
 {
     public class Sage
     {
