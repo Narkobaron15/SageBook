@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using System.Collections;
 
 namespace ADO.NET_Homework_3.Model
 {
@@ -22,5 +23,19 @@ namespace ADO.NET_Homework_3.Model
 
         public DbSet<Sage> Sages { get; set; }
         public DbSet<Book> Books { get; set; }
+
+        public IEnumerable<BookSages> BookSage
+        {
+            get
+            {
+                List<BookSages> list = new();
+
+                foreach (var book in Books)
+                    foreach (var sage in Sages)
+                        list.Add(new(book.Id, sage.Id));
+
+                return list;
+            }
+        }
     }
 }
