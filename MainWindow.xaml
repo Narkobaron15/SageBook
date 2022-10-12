@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ADO.NET_Homework_3"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Books &amp; sages" Height="450" Width="800">
 
     <Grid Margin="30, 20">
         <Grid.ColumnDefinitions>
@@ -33,13 +33,13 @@
             <ComboBoxItem Content="BookSage"/>
         </ComboBox>
 
-        <Button Name="AddButton" Content="Add" Grid.Column="3" Grid.Row="1"
-                Padding="10, 2" Margin="10"/>
-        <Button Name="UpdButton" Content="Update" Grid.Column="4" Grid.Row="1"
-            Padding="10, 2" Margin="10"/>
+        <Button Name="CreateButton" Content="Add" Grid.Column="3" Grid.Row="1"
+                Padding="10, 2" Margin="10" Click="CreateButton_Click"/>
+        <Button Name="UpdateButton" Content="Update" Grid.Column="4" Grid.Row="1"
+            Padding="10, 2" Margin="10" Click="UpdateButton_Click"/>
         <Button Name="DeleteButton" Content="Delete"
                 Grid.Row="1" Grid.Column="5"
-                Padding="10, 2" Margin="10"/>
+                Padding="10, 2" Margin="10" Click="DeleteButton_Click"/>
 
         <Image Name="SagePic" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="3"/>
     </Grid>

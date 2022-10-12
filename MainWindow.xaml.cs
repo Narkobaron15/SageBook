@@ -26,28 +26,42 @@ namespace ADO.NET_Homework_3
         public MainWindow()
         {
             InitializeComponent();
-            using MyDbContext context = new();
-
-            //_ = new Button() { Content = "" };
         }
 
         private void TableComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            using MyDbContext c = new();
+            using MyDbContext context = new();
 
             DataGrid1.ItemsSource = TableComboBox.SelectedIndex switch
             {
-                0 => c.Books.ToList(),
-                1 => c.Sages.ToList(),
-                2 => c.BookSage,
+                0 => context.Books.ToList(),
+                1 => context.Sages.ToList(),
+                2 => context.BookSage,
                 _ => throw new NotImplementedException(),
             };
         }
 
         private void DataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // tests are needed
+
             if (DataGrid1.SelectedItem is Sage sage)
                 SagePic.Source = sage.GetBitmapImage();
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+            // open create window
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            // open update window
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            // open delete window
         }
     }
 }
