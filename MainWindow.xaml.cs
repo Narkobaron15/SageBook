@@ -91,6 +91,39 @@ namespace ADO.NET_Homework_3
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             // open update window
+
+            Window? AddWindow = null;
+            object selected = DataGrid1.SelectedItem;
+
+            if (selected is Book book)
+                AddWindow = new AddBookWindow(book, "Update a book");
+            else if (selected is Sage sage)
+                AddWindow = new AddSageWindow(sage, "Update a sage");
+            else if (selected is BookSage bs)
+            {
+                // add an AddBookSageWindow
+            }
+            else
+            {
+                MessageBox.Show("Select an item to update", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (AddWindow?.ShowDialog() == true)
+            {
+                object? result = ((IAddWindow)AddWindow).Result;
+                using MyDbContext Context = new();
+
+                if (result is null) return;
+                else if (result is BookSage instance)
+                {
+                    // to specify
+                }
+                else Context.Update(result);
+
+                Context.SaveChanges();
+                UpdateDataGrid();
+            }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)

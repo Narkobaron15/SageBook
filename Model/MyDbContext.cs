@@ -31,7 +31,7 @@ namespace ADO.NET_Homework_3.Model
                 List<BookSage> list = new();
 
                 foreach (var book in Books)
-                    foreach (var sage in Sages)
+                    foreach (var sage in book.Sages)
                         list.Add(new(book.Id, sage.Id));
 
                 return list;
