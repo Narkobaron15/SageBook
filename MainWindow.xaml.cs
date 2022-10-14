@@ -24,17 +24,9 @@ namespace ADO.NET_Homework_3
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly MyDbContext Context;
-
         public MainWindow()
         {
-            Context = new();
             InitializeComponent();
-        }
-
-        ~MainWindow()
-        {
-            Context.Dispose();
         }
 
         private void TableComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateDataGrid();
@@ -43,6 +35,8 @@ namespace ADO.NET_Homework_3
 
         private void UpdateDataGrid()
         {
+            using MyDbContext Context = new();
+
             DataGrid1.ItemsSource = TableComboBox.SelectedIndex switch
             {
                 0 => Context.Books.ToList(),
@@ -63,8 +57,6 @@ namespace ADO.NET_Homework_3
 
         private void DataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // tests are needed
-
             if (DataGrid1.SelectedItem is Sage sage)
                 SagePic.Source = sage.GetBitmapImage();
             else SagePic.Source = null;
@@ -72,11 +64,9 @@ namespace ADO.NET_Homework_3
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            // open create window
-
             Window AddWindow = TableComboBox.SelectedIndex switch
             {
-                0 => throw new NotImplementedException(),
+                0 => new AddBookWindow("Add new book"),
                 1 => new AddSageWindow("Add new sage"),
                 2 => throw new NotImplementedException(),
                 _ => throw new NotImplementedException(),
@@ -85,13 +75,13 @@ namespace ADO.NET_Homework_3
             if (AddWindow.ShowDialog() == true)
             {
                 object? result = ((IAddWindow)AddWindow).Result;
+                using MyDbContext Context = new();
 
                 if (result is null) return;
                 else if (result is BookSage instance)
                     Context.Books.FirstOrDefault(book => book.Id == instance.BookId)?.Sages.Add(
-                    Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId));
-                else
-                    Context.Add(result);
+                        Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId));
+                else Context.Add(result);
 
                 Context.SaveChanges();
                 UpdateDataGrid();
@@ -105,6 +95,8 @@ namespace ADO.NET_Homework_3
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
+            using MyDbContext Context = new();
+
             if (DataGrid1.SelectedItem is BookSage instance)
                 Context.Books.FirstOrDefault(book => book.Id == instance.BookId)?.Sages.Remove(
                     Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId));

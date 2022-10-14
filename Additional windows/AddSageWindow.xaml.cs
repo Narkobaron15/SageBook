@@ -1,5 +1,4 @@
-﻿using ADO.NET_Homework_3.Additional_windows;
-using ADO.NET_Homework_3.Model;
+﻿using ADO.NET_Homework_3.Model;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -16,10 +15,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ADO.NET_Homework_3
+namespace ADO.NET_Homework_3.Additional_windows
 {
     /// <summary>
-    /// Interaction logic for AddWindow.xaml
+    /// Interaction logic for AddSageWindow.xaml
     /// </summary>
     public partial class AddSageWindow : Window, IAddWindow
     {
@@ -29,7 +28,6 @@ namespace ADO.NET_Homework_3
         public AddSageWindow(string Title)
         {
             InitializeComponent();
-
             DescriptionLabel.Content = this.Title = Title;
         }
         public AddSageWindow(Sage Sage, string Title)
