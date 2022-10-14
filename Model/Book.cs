@@ -14,5 +14,7 @@ namespace ADO.NET_Homework_3.Model
             Title = "";
             Sages = new List<Sage>();
         }
+
+        public override string ToString() => Title;
     }
 }

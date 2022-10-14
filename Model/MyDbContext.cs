@@ -24,11 +24,11 @@ namespace ADO.NET_Homework_3.Model
         public DbSet<Sage> Sages { get; set; }
         public DbSet<Book> Books { get; set; }
 
-        public IEnumerable<BookSages> BookSage
+        public IEnumerable<BookSage> BookSage
         {
             get
             {
-                List<BookSages> list = new();
+                List<BookSage> list = new();
 
                 foreach (var book in Books)
                     foreach (var sage in Sages)

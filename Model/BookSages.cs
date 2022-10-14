@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ADO.NET_Homework_3.Model
 {
-    internal struct BookSages
+    internal struct BookSage
     {
-        public BookSages() : this(0, 0) { }
-        public BookSages(int BookId, int SageId)
+        public BookSage() : this(0, 0) { }
+        public BookSage(int BookId, int SageId)
         {
             this.BookId = BookId;
             this.SageId = SageId;

@@ -1,4 +1,5 @@
-﻿using ADO.NET_Homework_3.Model;
+﻿using ADO.NET_Homework_3.Additional_windows;
+using ADO.NET_Homework_3.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,22 +24,41 @@ namespace ADO.NET_Homework_3
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly MyDbContext Context;
+
         public MainWindow()
         {
+            Context = new();
             InitializeComponent();
         }
 
-        private void TableComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        ~MainWindow()
         {
-            using MyDbContext context = new();
+            Context.Dispose();
+        }
 
+        private void TableComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateDataGrid();
+
+        private void Window_ContentRendered(object sender, EventArgs e) => UpdateDataGrid();
+
+        private void UpdateDataGrid()
+        {
             DataGrid1.ItemsSource = TableComboBox.SelectedIndex switch
             {
-                0 => context.Books.ToList(),
-                1 => context.Sages.ToList(),
-                2 => context.BookSage,
+                0 => Context.Books.ToList(),
+                1 => Context.Sages.ToList(),
+                2 => Context.BookSage,
                 _ => throw new NotImplementedException(),
             };
+
+            try
+            {
+                if (TableComboBox.SelectedIndex == 0)
+                    DataGrid1.Columns[2].Visibility = Visibility.Collapsed;
+                else if (TableComboBox.SelectedIndex == 1)
+                    DataGrid1.Columns[3].Visibility = DataGrid1.Columns[4].Visibility = Visibility.Collapsed;
+            }
+            catch { /* ignore */ }
         }
 
         private void DataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -47,11 +67,35 @@ namespace ADO.NET_Homework_3
 
             if (DataGrid1.SelectedItem is Sage sage)
                 SagePic.Source = sage.GetBitmapImage();
+            else SagePic.Source = null;
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             // open create window
+
+            Window AddWindow = TableComboBox.SelectedIndex switch
+            {
+                0 => throw new NotImplementedException(),
+                1 => new AddSageWindow("Add new sage"),
+                2 => throw new NotImplementedException(),
+                _ => throw new NotImplementedException(),
+            };
+            
+            if (AddWindow.ShowDialog() == true)
+            {
+                object? result = ((IAddWindow)AddWindow).Result;
+
+                if (result is null) return;
+                else if (result is BookSage instance)
+                    Context.Books.FirstOrDefault(book => book.Id == instance.BookId)?.Sages.Add(
+                    Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId));
+                else
+                    Context.Add(result);
+
+                Context.SaveChanges();
+                UpdateDataGrid();
+            }
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
@@ -61,7 +105,13 @@ namespace ADO.NET_Homework_3
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            // open delete window
+            if (DataGrid1.SelectedItem is BookSage instance)
+                Context.Books.FirstOrDefault(book => book.Id == instance.BookId)?.Sages.Remove(
+                    Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId));
+            else Context.Remove(DataGrid1.SelectedItem);
+
+            Context.SaveChanges();
+            UpdateDataGrid();
         }
     }
 }

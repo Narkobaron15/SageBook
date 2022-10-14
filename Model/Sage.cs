@@ -17,19 +17,7 @@ namespace ADO.NET_Homework_3.Model
         [Column(TypeName = "image")]
         public byte[]? Image { get; set; }
 
-        public BitmapImage? GetBitmapImage() => Image is null ? null : GetBitmapImage(Image);
-
-        public static BitmapImage GetBitmapImage(byte[] source)
-        {
-            using MemoryStream memoryStream = new(source);
-            BitmapImage imageSource = new();
-
-            imageSource.BeginInit();
-            imageSource.StreamSource = memoryStream;
-            imageSource.EndInit();
-
-            return imageSource;
-        }
+        public BitmapImage? GetBitmapImage() => Image?.TryGetImageFromByteArray();
 
         public virtual ICollection<Book> Books { get; set; }
 
@@ -39,5 +27,7 @@ namespace ADO.NET_Homework_3.Model
             Name = "";
             Books = new List<Book>();
         }
+
+        public override string ToString() => Name;
     }
 }
