@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ADO.NET_Homework_3.Model
 {
-    internal struct BookSage
+    public struct BookSage
     {
         public BookSage() : this(0, 0) { }
         public BookSage(int BookId, int SageId)

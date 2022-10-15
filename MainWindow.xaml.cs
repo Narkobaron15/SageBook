@@ -53,6 +53,8 @@ namespace ADO.NET_Homework_3
                     DataGrid1.Columns[3].Visibility = DataGrid1.Columns[4].Visibility = Visibility.Collapsed;
             }
             catch { /* ignore */ }
+
+            GC.Collect();
         }
 
         private void DataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -60,6 +62,8 @@ namespace ADO.NET_Homework_3
             if (DataGrid1.SelectedItem is Sage sage)
                 SagePic.Source = sage.GetBitmapImage();
             else SagePic.Source = null;
+
+            GC.Collect();
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -68,7 +72,7 @@ namespace ADO.NET_Homework_3
             {
                 0 => new AddBookWindow("Add new book"),
                 1 => new AddSageWindow("Add new sage"),
-                2 => throw new NotImplementedException(),
+                2 => new AddBookSageWindow(),
                 _ => throw new NotImplementedException(),
             };
             
@@ -79,8 +83,12 @@ namespace ADO.NET_Homework_3
 
                 if (result is null) return;
                 else if (result is BookSage instance)
-                    Context.Books.FirstOrDefault(book => book.Id == instance.BookId)?.Sages.Add(
-                        Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId));
+                {
+                    Book? book = Context.Books.FirstOrDefault(book => book.Id == instance.BookId);
+                    Sage? sage = Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId);
+
+                    book?.Sages.Add(sage);
+                }
                 else Context.Add(result);
 
                 Context.SaveChanges();
@@ -90,19 +98,15 @@ namespace ADO.NET_Homework_3
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            // open update window
-
-            Window? AddWindow = null;
             object selected = DataGrid1.SelectedItem;
+            Window? AddWindow = null;
 
-            if (selected is Book book)
-                AddWindow = new AddBookWindow(book, "Update a book");
-            else if (selected is Sage sage)
-                AddWindow = new AddSageWindow(sage, "Update a sage");
+            if (selected is Book Book)
+                AddWindow = new AddBookWindow(Book, "Update a book");
+            else if (selected is Sage Sage)
+                AddWindow = new AddSageWindow(Sage, "Update a sage");
             else if (selected is BookSage bs)
-            {
-                // add an AddBookSageWindow
-            }
+                AddWindow = new UpdateBookSageWindow(bs);
             else
             {
                 MessageBox.Show("Select an item to update", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -117,7 +121,20 @@ namespace ADO.NET_Homework_3
                 if (result is null) return;
                 else if (result is BookSage instance)
                 {
-                    // to specify
+                    #pragma warning disable CS8602, CS8634, CS8604, CS8622
+
+                    Sage? sagePrev = Context.Sages.Where(x => x.Id == ((BookSage)selected).SageId).FirstOrDefault();
+                    Context.Entry(sagePrev).Collection(x => x.Books).Load();
+                    Book? bookPrev = Context.Books.Where(x => x.Id == ((BookSage)selected).BookId).FirstOrDefault();
+                    bookPrev?.Sages.Remove(sagePrev);
+
+                    Sage? sageCurrent = Context.Sages.Where(x => x.Id == instance.SageId).FirstOrDefault();
+                    Context.Entry(sageCurrent).Collection(x => x.Books).Load();
+                    Book? bookCurrent = Context.Books.Where(x => x.Id == instance.BookId).FirstOrDefault();
+
+                    sageCurrent?.Books.Add(bookCurrent);
+
+                    #pragma warning restore CS8602, CS8634, CS8604, CS8622
                 }
                 else Context.Update(result);
 
@@ -128,15 +145,28 @@ namespace ADO.NET_Homework_3
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            using MyDbContext Context = new();
+            try
+            {
+                using MyDbContext Context = new();
 
-            if (DataGrid1.SelectedItem is BookSage instance)
-                Context.Books.FirstOrDefault(book => book.Id == instance.BookId)?.Sages.Remove(
-                    Context.Sages.FirstOrDefault(sage => sage.Id == instance.SageId));
-            else Context.Remove(DataGrid1.SelectedItem);
+                if (DataGrid1.SelectedItem is BookSage instance)
+                {
+                    #pragma warning disable CS8602, CS8634, CS8604, CS8622
 
-            Context.SaveChanges();
-            UpdateDataGrid();
+                    Book? book = Context.Books.FirstOrDefault(book => book.Id == instance.BookId);
+                    Context.Entry(book).Collection(x => x.Sages).Load();
+                    Sage? sage = book?.Sages.FirstOrDefault(sage => sage.Id == instance.SageId);
+
+                    book?.Sages.Remove(sage);
+
+                    #pragma warning restore CS8602, CS8634, CS8604, CS8622
+                }
+                else Context.Remove(DataGrid1.SelectedItem);
+
+                Context.SaveChanges();
+                UpdateDataGrid();
+            }
+            catch { /* ignore */ }
         }
     }
 }

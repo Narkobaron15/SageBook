@@ -7,6 +7,19 @@
         mc:Ignorable="d" ResizeMode="CanMinimize"
         Title="AddSageWindow" Height="601" Width="554">
 
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="15, 4"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="30, 10"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+    </Window.Resources>
+    
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -22,12 +35,10 @@
         </Grid.RowDefinitions>
 
         <Label Name="DescriptionLabel" Content="Add new sage" FontSize="25" 
-               FontWeight="DemiBold" Margin="30, 15" VerticalAlignment="Center"/>
+               FontWeight="DemiBold" Margin="30, 15"/>
 
-        <Label Content="Name" FontSize="20" Grid.Row="1"
-               Margin="30, 10" VerticalAlignment="Center"/>
-        <Label Content="Birthday" FontSize="20" Grid.Row="2"
-               Margin="30, 10" VerticalAlignment="Center"/>
+        <Label Content="Name" Grid.Row="1"/>
+        <Label Content="Birthday" Grid.Row="2"/>
 
         <TextBox Name="NameTextBox" Grid.Row="1" Grid.Column="1"
                  Padding="10, 4" Margin="15"/>
@@ -37,14 +48,11 @@
         <Image Name="SageImg" Grid.Row="3" Grid.ColumnSpan="2" Margin="60, 20"/>
         <Button Name="SelectImgButton" Content="Select image"
                 VerticalAlignment="Center" HorizontalAlignment="Center"
-                Grid.Row="4" Grid.ColumnSpan="2" Padding="15, 4"
-                FontSize="14" Margin="10" Click="SelectImgButton_Click"/>
+                Grid.Row="4" Grid.ColumnSpan="2" Click="SelectImgButton_Click"/>
 
-        <Button Name="OKButton" Content="OK"
-                VerticalAlignment="Center" HorizontalAlignment="Right"
-                Grid.Row="5" Padding="25, 4" FontSize="14" Margin="10" Click="OKButton_Click"/>
-        <Button Name="CancelButton" Content="Cancel" Grid.Column="1"
-                VerticalAlignment="Center" HorizontalAlignment="Left"
-                Grid.Row="5" Padding="15, 4" FontSize="14" Margin="10" Click="CancelButton_Click"/>
+        <Button Name="OKButton" Content="OK" VerticalAlignment="Center" HorizontalAlignment="Right"
+                Grid.Row="5" Padding="25, 4" Click="OKButton_Click"/>
+        <Button Name="CancelButton" Content="Cancel" Grid.Column="1" VerticalAlignment="Center"
+                HorizontalAlignment="Left" Grid.Row="5" Click="CancelButton_Click"/>
     </Grid>
 </Window>
